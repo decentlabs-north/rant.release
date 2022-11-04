@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+	<title>1k Notepad</title>
+  <meta name="description" content="Distraction free markdown editor">
+  <link rel="manifest" href="manifest.json" />
+  <link rel='icon' type='image/png' href='/favicon.png'>
+	<link rel='stylesheet' href='/build/bundle.css'>
+  <link rel='stylesheet' href='/global.css'>
+	<script type="module" async src='/build/bundle.js'></script>
+</head>
+<body data-theme="dark">
+  <noscript>
+    Not a fan of running other people's scripts?<br/>
+    <br/>
+    This app edits and displays Markdown<br/>
+    It contains only Free and Open software.<br/>
+    Have a look yourself:<br/>
+    <br/>
+    https://github.com/telamon/rant/<br/>
+    <br/>
+    Enjoy!<br/>
+  </noscript>
+
+  <main id="main" data-mirror="true">
+    <install-button></install-button> <!-- doesn't seem to pop -->
+
+    <!--<router-view class="west"></router-view>-->
+    <!----- DRAFTS ------------->
+    <home class="west">
+      <main-menu></main-menu>
+      <div class="container pad">
+        <div class="row space-between xstart">
+          <h3>Drafts</h3>
+          <a id="btn-resume-draft" role="button" href="#/edit" class="outline secondary">
+            Resume Editing
+          </a>
+        </div>
+        <p>Drafts are private, publish to share</p>
+        <rant-list id="saved-drafts" data-create="true"></rant-list>
+      </div>
+    </home>
+
+
+    <!----- SAVED RANTS ------------->
+    <saved class="west">
+      <main-menu></main-menu>
+      <div class="container pad">
+        <div class="row space-between xstart">
+          <h3>Saved</h3>
+          <b id="btn-import" role="button" class="outline secondary">
+            Import
+          </b>
+        </div>
+        <div id="saved-rants-alert"></div>
+        <rant-list id="saved-rants"></rant-list>
+      </div>
+    </saved>
+
+    <!----- SETTINGS ------------->
+    <settings class="west">
+      <main-menu></main-menu>
+      <div class="pad">
+        <h3>Settings</h3>
+        <p>
+          <label for="opt-dark-mode">
+            <input type="checkbox" role="switch" name="opt-dark-mode" id="opt-dark-mode" />
+            Dark mode
+          </label>
+          <label for="opt-mirror">
+            <input type="checkbox" role="switch" name="opt-mirror" id="opt-mirror" />
+            Mirror layout on Desktop
+          </label>
+        </p>
+        <div>
+          Public Key
+          <pre><code id="opt-pk"></code></pre>
+        </div>
+        <button id="opt-btn-reload">Rebuild Cache</button>
+        <button id="opt-btn-purge">Purge Everything</button>
+        <br/>
+        <hr/>
+        <sup><code>About</code></sup>
+        <logo>
+          <Icon id="dl-logo-red" />
+        </logo>
+        <h1 class="text-center">
+           1kilo Rant v<samp id="nfo-version"></samp>
+        </h1>
+        <p>
+          Where ever we're going, we'll get there eventually.
+          Meanwhile, come say hi!
+        <ul>
+          <li><a href="https://discord.gg/8RMRUPZ9RS">Discord</a></li>
+          <li><a href="https://github.com/telamon/rant/issues">Questions &amp; Support</a></li>
+          <li><a href="https://github.com/telamon/rant">Source code</a></li>
+          <li>Built with: <a href="https://github.com/telamon/picostack">picostack</a></li>
+        </ul>
+
+        <h5>Legalities</h5>
+        <table>
+          <tdata>
+            <tr><td>build</td><td id="nfo-build"></td></tr>
+            <tr><td>Cookies</td><td>none, zilch, zero</td></tr>
+            <tr><td>GDPR</td><td>All blocks are automatically erased when timers hit <code>00:00</code></td></tr>
+            <tr><td>User</td><td>We have absolutley no control over p2p interactions, apply common sense, be polite</td></tr>
+            <tr><td>License</td><td>GNU AGPL version 3</td></tr>
+            <tr><td>Motto</td><td>No servers, no supernodes, liberate humans and machines alike</td></tr>
+          </tdata>
+        </table>
+        <p>
+          <sub>Bottom line</sub><br/>
+          <samp>
+            This software is presented to you as is,
+            Decent Labs AB takes no responsibility for how this software is used or distributed.
+            <br/>
+            Refer to the contents of the aforementioned license for more details.
+          </samp>
+        </p>
+      </div>
+    </settings>
+
+    <!----- DISCOVER/Swarm! ------------->
+    <discover class="west">
+      <main-menu></main-menu>
+      <discover-page>
+      </discover-page>
+    </discover>
+
+    <!----- EDITOR ------------->
+    <editor id="view-editor" class="west col space-between">
+      <main-menu></main-menu>
+      <div class="text-center no-draft">
+        <code>Note is <strong>signed</strong>, <ico>🔓</ico>-fork to edit</code>
+        <hr/>
+      </div>
+      <textarea id="markdown-area" placeholder="Type your note here, but watch out for the bytecount below. You can type as much as you want, but publishing is limited to 1024bytes; Keep it short - 1K"></textarea>
+      <div class="row xend">
+        <samp><span id="edit-capacity-bytes"></span>/1024</samp>
+        <progress id="edit-capacity-meter" max=100></progress>
+      </div>
+      <!-- Rant Menu -->
+      <nav class="row bottom">
+        <button id="edit-back" data-tooltip="Back"><ico>🔙</ico></button>
+        <button id="edit-preview" data-tooltip="Preview"><ico>👁️</ico></button>
+        <!-- draft ctrls -->
+        <button id="edit-options" data-tooltip="Options"><ico>🎨</ico></button>
+        <button id="edit-publish" data-tooltip="Publish"><ico>🔏</ico></button>
+        <!-- signed ctrls -->
+        <button id="edit-fork" data-tooltip="Fork"><ico>🔓</ico></button>
+        <button id="edit-share" data-tooltip="Share"><ico>📤</ico></button>
+        <!-- lock keypad dialog-->
+        <dialog id="edit-keypad-dlg">
+          <article class="keypad-article">
+            <keypad-dialog id="keypadLock"></keypad-dialog>
+          </article>
+        </dialog>
+        <dialog id="edit-opts-dlg">
+          <article>
+            <header>Note Options</header>
+            <label for="edit-opt-theme">
+              Paper
+              <select name="edit-opt-theme" id="edit-opt-theme">
+                <option value="0">Dark</option>
+                <option value="1">Light</option>
+                <option value="2">Decent</option>
+                <option value="3">Morpheus✨</option>
+                <option value="4">Ghostwriter✨</option>
+                <option value="5">Disco✨</option>
+              </select>
+            </label>
+            <label for="edit-opt-encryption">
+              Encryption
+              <select name="edit-opt-encryption" id="edit-opt-encryption">
+                <option value="0">none</option>
+                <option value="1">Keypad</option>
+                <option value="2">Passphrase</option>
+                <option value="3">Box</option>
+              </select>
+            </label>
+            <!--
+            <label for="edit-opt-location">
+              Attach Location
+              <input name="edit-opt-location" id="edit-opt-location" />
+            </label> -->
+            <footer><button id="edit-opts-ok">ok</button></footer>
+          </article>
+        </dialog>
+      </nav>
+    </editor>
+
+    <!----- RENDERER ------------->
+    <render class="east col space-between" id="view-render">
+      <render-ctrls id="render-ctrls"></render-ctrls>
+      <!-- unlock keypad dialog -->
+      <dialog id="edit-keypad-dlg2">
+        <article class="keypad-article">
+          <div class="unlock-keypad-title" id="UnlockKeypadTitle"><span id="UnlockKeypadTitleSpan">Enter PIN</span></div>
+          <keypad-dialog post='false' id="keypadUnlock"></keypad-dialog>
+        </article>
+      </dialog>
+      <message-preview id="markdown-render" class="container grow4"></message-preview>
+      <button id="r-btn-resume" class="btn-round"><ico>✏️</ico></button>
+      <div id="r-ghost-pad">&nbsp;</div>
+
+      <!-- TODO: UX placement
+      <details class="text-center">
+        <summary>QR</summary>
+        <qr-code id="qr-pickle"></qr-code>
+      </details> -->
+
+      <footer class="text-center">
+        <sub>1k Rant ©<!--<sub>left</sub>--> Decent Labs 2022 ¤ Powered by <a href="https://github.com/telamon/picostack">picostack</a> ¤</sub>
+      </footer>
+    </render>
+
+    <!----- Pitch ------------->
+    <pitch class="east pad">
+      <render-ctrls state="pitch"></render-ctrls>
+      <message-preview id="pitch-render" class="container grow4"></message-preview>
+      <footer class="text-center">
+        <sub>1k Rant ©<!--<sub>left</sub>--> Decent Labs 2022 ¤ Powered by <a href="https://github.com/telamon/picostack">picostack</a> ¤</sub>
+      </footer>
+    </pitch>
+  </main>
+</body>
+</html>

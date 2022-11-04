@@ -9,7 +9,7 @@ rm -rf ./docs \
   && yarn && yarn test && yarn build \
   && REV=$(git rev-parse --short HEAD) \
   && cd .. \
-  && cp -r src/public/* docs/ \
+  && cp -r src/pub/* docs/ \
   && echo "$HOST" > docs/CNAME \
   && touch docs/.nojekyll \
   && git add . \
