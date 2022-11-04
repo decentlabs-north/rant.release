@@ -1,4 +1,5 @@
 #!/bin/bash
+HOST=1k.fyi
 rm -rf ./docs \
   && mkdir ./docs \
   && git submodule init src/ \
@@ -9,7 +10,7 @@ rm -rf ./docs \
   && REV=$(git rev-parse --short HEAD) \
   && cd .. \
   && cp -r src/public/* docs/ \
-  && echo "pico.pub" > docs/CNAME \
+  && echo "$HOST" > docs/CNAME \
   && touch docs/.nojekyll \
   && git add . \
   && git commit -am "automated release $REV" \
