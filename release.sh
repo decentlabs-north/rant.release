@@ -15,6 +15,7 @@ rm -rf ./docs \
   && git add . \
   && git commit -am "automated release $REV" \
   && git push \
-  && echo "done $REV"
+  && echo "done $REV, app-size" \
+  && du -sh docs/
 
 
